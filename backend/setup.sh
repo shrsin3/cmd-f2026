@@ -1,24 +1,27 @@
 #!/bin/bash
 
-# Basic Setup Script for ADHD Backend
-# Creates virtual environment and installs dependencies
+echo "🚀 Setting up cmd-f 2026 ADHD Backend..."
 
-echo "Setting up cmd-f 2026 Backend..."
+# 1. Create venv if it doesn't exist
+if [ ! -d "venv" ]; then
+    python -m venv venv
+    echo "✅ Virtual environment created."
+fi
 
-# Create virtual environment
-python3 -m venv venv
+# 2. Determine the activation path (Windows vs Unix)
+if [ -f "venv/Scripts/activate" ]; then
+    VENV_PATH="venv/Scripts/activate" # Windows
+elif [ -f "venv/bin/activate" ]; then
+    VENV_PATH="venv/bin/activate"    # Mac/Linux
+fi
 
-# Activate virtual environment
-source venv/bin/activate
-
-# Install dependencies
+# 3. Activate and Install
+source "$VENV_PATH"
+echo "📦 Installing Gemini dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
 echo ""
-echo "✓ Setup complete!"
-echo ""
-echo "To start the server:"
-echo "  source venv/bin/activate"
-echo "  python app.py"
-echo ""
+echo "✨ Setup complete!"
+echo "To activate manually: source $VENV_PATH"
+echo "To run: python AI_task_breaker.py"
