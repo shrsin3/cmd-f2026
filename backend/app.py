@@ -17,6 +17,8 @@ from flask_cors import CORS
 # Import all services
 from services.prescriptionUploadService import PrescriptionService
 from services.taskBreakerService import TaskBreakerService
+from services.detectService import FocusSessionService
+
 
 # Configure logging
 logging.basicConfig(
@@ -101,7 +103,18 @@ def initialize_services():
     except Exception as e:
         logger.error(f"✗ TaskBreakerService unexpected error: {e}")
         services['task_breaker'] = None
-    
+        
+    # Initialize focus session service
+    try:
+        services['focus_session'] = FocusSessionService()
+        logger.info("✓ FocusSessionService initialized")
+    except ValueError as e:
+        logger.error(f"✗ FocusSessionService failed: {e}")
+        services['focus_session'] = None
+    except Exception as e:
+        logger.error(f"✗ FocusSessionService unexpected error: {e}")
+        services['focus_session'] = None
+
     # Add more services here as needed
     # try:
     #     services['focus'] = FocusService()
@@ -385,7 +398,59 @@ def break_task():
             "message": str(e)
         }), 500
 
+# ============================================================================
+# API ENDPOINTS - FOCUS DETECTION
+# ============================================================================
 
+@app.route('/api/focus/start', methods=['POST'])
+def start_focus_session():
+    """
+    Start a focus detection session using webcam and face detection
+    
+    Request:
+        {
+            "minutes": 5.0  (optional, default: 1.0)
+        }
+    
+    Response:
+        {
+            "status": "success",
+            "minutes": 5.0,
+            "distractions": 3,
+            "timestamp": "2024-03-07T..."
+        }
+    """
+    service, error = get_service('focus_session')
+    if error:
+        return error
+    
+    try:
+        data = request.get_json() or {}
+        duration_mins = data.get('duration_mins', 1.0)
+        
+        if duration_mins <= 0:
+            return jsonify({
+                "status": "error",
+                "message": "Duration must be a positive number"
+            }), 400
+        logger.info(f"Starting focus session for {duration_mins} minutes")
+        
+        # Start the focus session
+        result = service.start_async_session(duration_mins)
+        
+        return jsonify({
+            "status": "success",
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error starting focus session: {e}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+        
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
@@ -449,6 +514,7 @@ if __name__ == '__main__':
     logger.info("  POST   /api/prescription/upload-file  - Upload file")
     logger.info("  GET    /api/prescription/<user_id>    - Get prescription")
     logger.info("  POST   /api/task/break                 - Break goal into tasks")
+    logger.info("  POST   /api/focus/start                - Start focus session")
     logger.info("  GET    /api/health                    - Health check")
     logger.info("")
     logger.info("Server running on http://0.0.0.0:5000")

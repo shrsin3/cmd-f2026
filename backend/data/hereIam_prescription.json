@@ -1,0 +1,23 @@
+{
+  "user_id": "hereIam",
+  "timestamp": "2026-03-08T00:48:02.683695",
+  "analysis": {
+    "medications": [
+      {
+        "name": "Vyvanse (Lisdexamfetamine)",
+        "dosage": "30 mg",
+        "frequency": "every morning",
+        "type": "stimulant"
+      },
+      {
+        "name": "Melatonin",
+        "dosage": "3 mg",
+        "frequency": "at bedtime as needed for sleep",
+        "type": "other"
+      }
+    ],
+    "prescriber": "Dr. Kevin Patel, MD",
+    "warnings": [],
+    "confidence": 1.0
+  }
+}

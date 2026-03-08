@@ -1,0 +1,17 @@
+{
+  "user_id": "jiji",
+  "timestamp": "2026-03-08T01:03:11.949099",
+  "analysis": {
+    "medications": [
+      {
+        "name": "Adderall XR",
+        "dosage": "20 mg",
+        "frequency": "every morning",
+        "type": "stimulant"
+      }
+    ],
+    "prescriber": "Dr. Sarah Mitchell",
+    "warnings": [],
+    "confidence": 1.0
+  }
+}

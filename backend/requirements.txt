@@ -10,6 +10,7 @@ google-genai==0.3.0
 # Computer Vision (For FocusSessionService)
 opencv-python==4.9.0.80
 mediapipe==0.10.11
+protobuf==3.20.3
 
 # File & Image Processing
 PyPDF2==3.0.0
