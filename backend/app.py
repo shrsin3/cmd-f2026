@@ -20,6 +20,7 @@ from flask_cors import CORS
 from services.prescriptionUploadService import PrescriptionService
 from services.taskBreakerService import TaskBreakerService
 from services.detectService import FocusSessionService
+from services.reportService import FocusReportService
 
 
 # Configure logging
@@ -142,6 +143,16 @@ def initialize_services():
         logger.error(f"✗ FocusSessionService unexpected error: {e}")
         services['focus_session'] = None
 
+     # Initialize focus report service
+    try:
+        services['report'] = FocusReportService()
+        logger.info("✓ FocusReportService initialized")
+    except ValueError as e:
+        logger.error(f"✗ FocusReportService failed: {e}")
+        services['report'] = None
+    except Exception as e:
+        logger.error(f"✗ FocusReportService unexpected error: {e}")
+        services['report'] = None
     # Add more services here as needed
     # try:
     #     services['focus'] = FocusService()
@@ -550,7 +561,43 @@ def clear_sessions():
         logger.error(f"Error clearing sessions: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
     
-    
+# ============================================================================
+# API ENDPOINTS - DAILY REPORT
+# ============================================================================
+
+@app.route('/api/report', methods=['GET'])
+def generate_focus_report():
+    """
+    Generate AI productivity report from focus sessions and prescription data
+
+    Response:
+        {
+            "total_focus_minutes": 48,
+            "total_distractions": 5,
+            "focus_score": 82,
+            "medication_considerations": "...",
+            "suggestions": ["...", "..."],
+            "personalized_recommendation": "..."
+        }
+    """
+    service, error = get_service('report')
+    if error:
+        return error
+
+    try:
+        logger.info("Generating focus report")
+
+        report = service.generate_report()
+
+        return jsonify(report), 200
+
+    except Exception as e:
+        logger.error(f"Error generating report: {e}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+           
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
@@ -616,6 +663,7 @@ if __name__ == '__main__':
     logger.info("  POST   /api/task/break                 - Break goal into tasks")
     logger.info("  POST   /api/focus/start                - Start focus session")
     logger.info("  GET    /api/health                    - Health check")
+    logger.info("  GET    /api/report                      - Generate daily focus report")
     logger.info("")
     logger.info("Server running on http://0.0.0.0:5000")
     logger.info("=" * 60)

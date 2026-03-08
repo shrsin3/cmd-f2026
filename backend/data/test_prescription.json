@@ -1,17 +1,21 @@
 {
   "user_id": "test",
-  "timestamp": "2026-03-08T00:41:59.329870",
+  "timestamp": "2026-03-08T09:10:45.014809",
   "analysis": {
     "medications": [
       {
-        "name": "Adderall XR",
-        "dosage": "20 mg",
-        "frequency": "every morning",
+        "name": "Adderall XR (Amphetamine/Dextroamphetamine Extended Release)",
+        "dosage": "20mg Capsules",
+        "frequency": "Take one (1) capsule by mouth every morning.",
         "type": "stimulant"
       }
     ],
-    "prescriber": "Dr. Sarah Mitchell, MD",
-    "warnings": [],
+    "prescriber": "Dr. Elena Rodriguez, MD",
+    "warnings": [
+      "Controlled Substance: Federal law prohibits the transfer of this drug to any person other than the patient for whom it was prescribed.",
+      "May cause insomnia if taken late in the day.",
+      "Monitor blood pressure and heart rate regularly."
+    ],
     "confidence": 1.0
   }
 }

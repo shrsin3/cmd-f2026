@@ -1,25 +1,30 @@
 {
-  "goal": "clean the garden",
+  "goal": "study for exam",
   "subtasks": [
     {
-      "step": "Find your gardening gloves and put them on.",
-      "time_estimate_minutes": 3
+      "title": "Stand up and walk to the kitchen",
+      "description": "Immediately get up from your chair, stretch your arms, and walk to the kitchen.  No thinking, just movement.  This gets your body moving and clears your head.",
+      "time_estimate_minutes": 5
     },
     {
-      "step": "Grab one trash bag and walk through the garden, picking up only the obvious litter (papers, plastic bottles, large fallen leaves) you can easily reach.",
-      "time_estimate_minutes": 10
+      "title": "Open textbook to page 3",
+      "description": "Quickly locate the page number 3 in your textbook.  Don\u2019t overthink it, just grab the page.  Visual cue is helpful.",
+      "time_estimate_minutes": 5
     },
     {
-      "step": "Pick a 2x2 foot section of a garden bed and pull out all the weeds you can see within that small area.",
-      "time_estimate_minutes": 12
+      "title": "One sentence note",
+      "description": "Write down *one* key fact or concept from the page 3.  Keep it super short \u2013 just a sentence max.  Don\u2019t worry about grammar!",
+      "time_estimate_minutes": 5
     },
     {
-      "step": "Grab a rake and rake up a small pile of debris (leaves, small sticks) from one designated path or corner of the garden.",
-      "time_estimate_minutes": 10
+      "title": "Quick 5-minute review",
+      "description": "Look at your note and quickly scan it.  Highlight 2-3 key words or phrases.  Don\u2019t analyze, just *see*.",
+      "time_estimate_minutes": 5
     },
     {
-      "step": "Empty the trash bag you filled into your main bin, then put away your gloves and rake.",
-      "time_estimate_minutes": 10
+      "title": "Quick 5-minute break - stretch!",
+      "description": "Stand up, do a quick stretch \u2013 arms, legs, back.  Seriously, just a minute.  This resets your focus.",
+      "time_estimate_minutes": 5
     }
   ],
   "estimated_total_time": 45

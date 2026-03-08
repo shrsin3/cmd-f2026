@@ -27,7 +27,7 @@ class FocusReportService:
             raise ValueError("GEMINI_API_KEY environment variable not set")
 
         self.client = genai.Client(api_key=self.api_key)
-        self.model_id = "gemini-2.5-flash TTS" 
+        self.model_id = "gemini-2.5-flash" 
         
         # Resolve the absolute path to the 'data' directory
         # This goes up one level from 'services/' then into 'data/'
