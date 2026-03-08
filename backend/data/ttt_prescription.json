@@ -1,12 +1,12 @@
 {
-  "user_id": "Jojo",
-  "timestamp": "2026-03-08T01:45:28.258348",
+  "user_id": "ttt",
+  "timestamp": "2026-03-08T01:42:17.995766",
   "analysis": {
     "medications": [
       {
         "name": "Adderall XR",
         "dosage": "20 mg capsule",
-        "frequency": "1 capsule by mouth every morning",
+        "frequency": "1 capsule every morning",
         "type": "stimulant"
       }
     ],

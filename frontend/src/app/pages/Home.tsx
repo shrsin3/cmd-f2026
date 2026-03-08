@@ -46,9 +46,9 @@ export default function Home() {
       // Handle the response structure
       const subtasks = data.result?.subtasks || data.subtasks || [];
 
-      // Transform subtasks to ensure they have the right structure
+      // Transform subtasks - keep it simple and clean
       const formattedSubtasks = subtasks.map((subtask: any, index: number) => {
-        // Handle different API response formats
+        // Handle string responses
         if (typeof subtask === "string") {
           return {
             id: index + 1,
@@ -57,31 +57,35 @@ export default function Home() {
             text: subtask,
             description: "",
             time_estimate: 15,
-            duration: 15,
           };
         }
 
+        // Handle object responses
+        const time = subtask.time_estimate_minutes || subtask.time_estimate || subtask.duration || 15;
+        const description = subtask.description || subtask.details || "";
+        const text = subtask.step || subtask.title || subtask.text || "";
+
+        console.log(`Subtask ${index + 1}: text="${text}", time=${time}m, description="${description.substring(0, 50)}..."`);
+
         return {
           id: index + 1,
-          step: subtask.step || subtask.title || subtask.text || "",
-          title: subtask.title || subtask.step || subtask.text || "",
-          text: subtask.text || subtask.step || subtask.title || "",
-          description: subtask.description || subtask.details || "",
-          time_estimate: subtask.time_estimate || subtask.duration || 15,
-          duration: subtask.duration || subtask.time_estimate || 15,
-          difficulty: subtask.difficulty || "medium",
-          ...subtask, // Include any other properties
+          step: text,
+          title: text,
+          text: text,
+          description: description,
+          time_estimate: time,
+          duration: time,
+          ...subtask, // Include any other properties from backend
         };
       });
 
       console.log("Formatted Subtasks:", formattedSubtasks);
 
-      // Navigate with both old and new property names for compatibility
+      // Navigate with complete data
       navigate("/tasks", {
         state: {
           task: taskInput,
           subtasks: formattedSubtasks,
-          subtasksFromState: formattedSubtasks, // Backup property
           completedTasks: [],
         },
       });

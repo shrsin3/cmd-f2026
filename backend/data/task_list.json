@@ -1,30 +1,25 @@
 {
-  "goal": "cooking dinner for family",
+  "goal": "clean the garden",
   "subtasks": [
     {
-      "name": "Ignite the Engine! (Kitchen Entry & Mood Set)",
-      "description": "Stand up from where you are, walk directly to the kitchen. Immediately put on your favorite high-energy playlist, a captivating podcast, or an audiobook to engage your brain.",
-      "estimated_time": 3
+      "step": "Find your gardening gloves and put them on.",
+      "time_estimate_minutes": 3
     },
     {
-      "name": "Mission Briefing (Concept & Core Ingredients)",
-      "description": "Quickly scan the fridge/pantry for inspiration. Decide on a dinner *concept* (e.g., 'pasta night,' 'quick stir-fry,' 'sheet pan bake'). Pull out the 1-2 most crucial ingredients for this concept.",
-      "estimated_time": 7
+      "step": "Grab one trash bag and walk through the garden, picking up only the obvious litter (papers, plastic bottles, large fallen leaves) you can easily reach.",
+      "time_estimate_minutes": 10
     },
     {
-      "name": "Prep Power-Up (Gather, Chop, Setup)",
-      "description": "Gather *all* remaining ingredients and necessary tools (pots, pans, cutting board). Chop/prep the main components (e.g., slice onions, dice chicken). Get water boiling or oven preheating.",
-      "estimated_time": 15
+      "step": "Pick a 2x2 foot section of a garden bed and pull out all the weeds you can see within that small area.",
+      "time_estimate_minutes": 12
     },
     {
-      "name": "Launch Sequence (Main Cooking Start)",
-      "description": "Get the primary components of your main dish actively cooking (e.g., sear meat, add pasta to boiling water, put your sheet pan in the oven). *Crucially, set a timer for the next phase!*",
-      "estimated_time": 10
+      "step": "Grab a rake and rake up a small pile of debris (leaves, small sticks) from one designated path or corner of the garden.",
+      "time_estimate_minutes": 10
     },
     {
-      "name": "The Final Push (Sides & Serving)",
-      "description": "While your main dish finishes, quickly prepare any simple sides (e.g., toss a quick salad, steam some veggies, warm bread). Finish cooking the main dish, plate everything, and serve!",
-      "estimated_time": 10
+      "step": "Empty the trash bag you filled into your main bin, then put away your gloves and rake.",
+      "time_estimate_minutes": 10
     }
   ],
   "estimated_total_time": 45
