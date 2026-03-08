@@ -16,6 +16,7 @@ from flask_cors import CORS
 
 # Import all services
 from services.prescriptionUploadService import PrescriptionService
+from services.taskBreakerService import TaskBreakerService
 
 # Configure logging
 logging.basicConfig(
@@ -89,6 +90,17 @@ def initialize_services():
     except Exception as e:
         logger.error(f"✗ PrescriptionService unexpected error: {e}")
         services['prescription'] = None
+    
+    # Initialize task breaker service
+    try:
+        services['task_breaker'] = TaskBreakerService()
+        logger.info("✓ TaskBreakerService initialized")
+    except ValueError as e:
+        logger.error(f"✗ TaskBreakerService failed: {e}")
+        services['task_breaker'] = None
+    except Exception as e:
+        logger.error(f"✗ TaskBreakerService unexpected error: {e}")
+        services['task_breaker'] = None
     
     # Add more services here as needed
     # try:
@@ -307,6 +319,74 @@ def get_prescription(user_id: str):
 
 
 # ============================================================================
+# API ENDPOINTS - TASK BREAKING
+# ============================================================================
+
+@app.route('/api/task/break', methods=['POST'])
+def break_task():
+    """
+    Break a goal into manageable subtasks using AI
+    
+    Request:
+        {
+            "goal": "Clean my chaotic kitchen",
+            "prescription_info": "User is on 20mg Adderall; needs high-dopamine, very short bursts of activity." (optional)
+        }
+    
+    Response:
+        {
+            "status": "success",
+            "result": {
+                "goal": "Clean my chaotic kitchen",
+                "subtasks": [...],
+                "total_points": 100,
+                "estimated_total_time": "45-75 minutes"
+            },
+            "timestamp": "2024-03-07T..."
+        }
+    """
+    service, error = get_service('task_breaker')
+    if error:
+        return error
+
+    try:
+        data = request.get_json()
+
+        if not data or 'goal' not in data:
+            return jsonify({
+                "status": "error",
+                "message": "Missing 'goal' in request"
+            }), 400
+
+        goal = data['goal'].strip()
+        prescription_info = data.get('prescription_info', "Needs high-stimulation, 10-15 min bursts")
+
+        if not goal:
+            return jsonify({
+                "status": "error",
+                "message": "Goal cannot be empty"
+            }), 400
+
+        logger.info(f"Breaking task: {goal[:50]}...")
+
+        # Break the goal into tasks
+        result = service.break_goal_into_tasks(goal, prescription_info)
+
+        return jsonify({
+            "status": "success",
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error breaking task: {e}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+# ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
 
@@ -368,6 +448,7 @@ if __name__ == '__main__':
     logger.info("  POST   /api/prescription/upload-text  - Upload text")
     logger.info("  POST   /api/prescription/upload-file  - Upload file")
     logger.info("  GET    /api/prescription/<user_id>    - Get prescription")
+    logger.info("  POST   /api/task/break                 - Break goal into tasks")
     logger.info("  GET    /api/health                    - Health check")
     logger.info("")
     logger.info("Server running on http://0.0.0.0:5000")
