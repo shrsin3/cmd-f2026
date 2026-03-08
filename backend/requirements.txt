@@ -1,19 +1,24 @@
-# Core Flask
+# Core Flask & API
 Flask==3.0.0
 flask-cors==4.0.0
+werkzeug==3.0.0
 
-# AI/ML
+# AI/ML & Google Services
 google-generativeai==0.7.2
+google-genai==0.3.0
 
-# File Processing
+# Computer Vision (For FocusSessionService)
+opencv-python==4.9.0.80
+mediapipe==0.10.11
+
+# File & Image Processing
 PyPDF2==3.0.0
 pytesseract==0.3.13
 Pillow==10.1.0
 
 # Utilities
 python-dotenv==1.0.0
-werkzeug==3.0.0
-
+typing-extensions>=4.0.0
 
 # Testing
 pytest==7.4.0
