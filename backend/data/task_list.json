@@ -2,30 +2,30 @@
   "goal": "study for exam",
   "subtasks": [
     {
-      "title": "Stand up and walk to the kitchen",
-      "description": "Immediately get up from your chair, stretch your arms, and walk to the kitchen.  No thinking, just movement.  This gets your body moving and clears your head.",
-      "time_estimate_minutes": 5
+      "title": "Activate Your Space",
+      "description": "Stand up, stretch, and walk purposefully to your designated study spot. Grab a stimulating drink like iced coffee, sparkling water, or a flavored tea on your way.",
+      "time_estimate_minutes": 2
     },
     {
-      "title": "Open textbook to page 3",
-      "description": "Quickly locate the page number 3 in your textbook.  Don\u2019t overthink it, just grab the page.  Visual cue is helpful.",
-      "time_estimate_minutes": 5
+      "title": "Launch & Load",
+      "description": "Open your laptop or textbook directly to the *first* specific topic or concept you plan to tackle. No browsing, no getting sidetracked \u2013 just open to the exact page, slide, or video.",
+      "time_estimate_minutes": 3
     },
     {
-      "title": "One sentence note",
-      "description": "Write down *one* key fact or concept from the page 3.  Keep it super short \u2013 just a sentence max.  Don\u2019t worry about grammar!",
-      "time_estimate_minutes": 5
+      "title": "Concept Capture Sprint",
+      "description": "Dive into a single, high-interest concept for a focused burst. Actively read 2-3 pages, review a specific set of slides, or watch a stimulating 10-15 minute explanatory video related to a key exam topic. Focus on understanding, not perfection.",
+      "time_estimate_minutes": 15
     },
     {
-      "title": "Quick 5-minute review",
-      "description": "Look at your note and quickly scan it.  Highlight 2-3 key words or phrases.  Don\u2019t analyze, just *see*.",
-      "time_estimate_minutes": 5
+      "title": "Active Recall Blast",
+      "description": "Immediately after the sprint, spend a quick burst testing yourself. Create 3-5 rapid-fire flashcards from what you just learned, or try 1-2 quick practice questions without looking at notes. The goal is retrieval and engagement, not exhaustive accuracy.",
+      "time_estimate_minutes": 10
     },
     {
-      "title": "Quick 5-minute break - stretch!",
-      "description": "Stand up, do a quick stretch \u2013 arms, legs, back.  Seriously, just a minute.  This resets your focus.",
+      "title": "Victory Lap & Next Step",
+      "description": "Take 30 seconds to acknowledge your accomplishment! Then, quickly jot down *one* specific question you have, or *one* topic you want to start with in your *next* short study burst. Close your materials completely to signal the end of this session.",
       "time_estimate_minutes": 5
     }
   ],
-  "estimated_total_time": 45
+  "estimated_total_time": 35
 }

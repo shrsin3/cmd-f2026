@@ -44,15 +44,19 @@ class FocusReportService:
         """Calculate total minutes and distractions from the task_sessions.json file"""
         try:
             if not os.path.exists(self.sessions_file):
+                print(f"######################################################")
                 logger.warning(f"Session file not found at {self.sessions_file}")
                 return 0.0, 0
 
             with open(self.sessions_file, "r") as f:
                 sessions = json.load(f)
+            
+            print(sessions)
 
             # Summing data only from sessions marked as 'completed'
-            total_minutes = sum(s.get("minutes", 0) for s in sessions if s.get("completed"))
-            total_distractions = sum(s.get("distractions", 0) for s in sessions if s.get("completed"))
+            total_minutes = sum(s.get("minutes", 0) for s in sessions if s.get("status")=="success")
+            total_distractions = sum(s.get("distractions", 0) for s in sessions if s.get("status") =="success")
+            print(total_minutes, total_distractions)
 
             return float(total_minutes), int(total_distractions)
         except Exception as e:
