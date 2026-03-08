@@ -58,7 +58,7 @@ export default function SetupPage() {
     // Prepare form data for upload
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("user_id", name || `user_${Date.now()}`);  // Use name or generate ID
+    formData.append("user_id", 'test');  
 
     try {
       const response = await fetch("http://127.0.0.1:5000/api/prescription/upload-file", {

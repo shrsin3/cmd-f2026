@@ -31,12 +31,25 @@ class TaskBreakerService:
         self.data_dir = Path(__file__).resolve().parent.parent / "data"
         self.data_dir.mkdir(exist_ok=True)  # ensure folder exists
         self.task_file = self.data_dir / "task_list.json"
+        self.prescription_file = self.data_dir / "test_prescription.json"
 
         logger.info(f"TaskBreakerService initialized. Tasks will be saved to {self.task_file}")
 
-    def break_goal_into_tasks(self, goal: str, prescription_info: str = "Needs high-stimulation, 10-15 min bursts") -> Dict:
+    def break_goal_into_tasks(self, goal: str, prescription_info: str = "") -> Dict:
         """Break a goal into subtasks using Gemini AI"""
         logger.info(f"Breaking goal into tasks: {goal[:50]}...")
+        
+        if not prescription_info:
+            try:
+                with open(self.prescription_file, "r", encoding="utf-8") as f:
+                    prescription_data = json.load(f)
+                prescription_info = json.dumps(prescription_data)
+            except FileNotFoundError:
+                logger.warning(f"Prescription file not found: {self.prescription_file}")
+                prescription_info = ""
+            except json.JSONDecodeError as e:
+                logger.error(f"Error parsing prescription JSON: {e}")
+                prescription_info = ""
 
         prompt = f"""
         Role: You are an ADHD Productivity Coach.
