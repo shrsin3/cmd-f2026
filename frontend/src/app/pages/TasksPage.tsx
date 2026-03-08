@@ -113,18 +113,17 @@ export default function TasksPage() {
   const navigate = useNavigate();
   const task = location.state?.task || "My Task";
   const subtasksFromState = location.state?.subtasks || [];
-  
+  const completedTaskIds = location.state?.completedTasks || [];
+
   // Initialize subtasks with proper structure
   const [subtasks, setSubtasks] = useState(
     subtasksFromState.map((subtask: any, index: number) => {
-      // Debug: log what we're receiving
-      console.log(`Subtask ${index + 1}:`, subtask);
-      
+      const id = index + 1;
       return {
-        id: index + 1,
+        id,
         text: subtask.text || subtask.step || subtask.title || "",
         description: subtask.description || subtask.details || "",
-        checked: false, // Start all as unchecked
+        checked: completedTaskIds.includes(id),
         time_estimate: subtask.time_estimate_minutes || subtask.time_estimate || subtask.duration || 15
       };
     })
@@ -135,17 +134,22 @@ export default function TasksPage() {
 
   // Update subtasks when location state changes
   useEffect(() => {
+    const completed = location.state?.completedTasks || [];
     setSubtasks(
-      subtasksFromState.map((subtask: any, index: number) => ({
-        id: index + 1,
-        text: subtask.text || subtask.step || subtask.title || "",
-        description: subtask.description || subtask.details || "",
-        checked: false,
-        time_estimate: subtask.time_estimate_minutes || subtask.time_estimate || subtask.duration || 15
-      }))
+      subtasksFromState.map((subtask: any, index: number) => {
+        const id = index + 1;
+        return {
+          id,
+          text: subtask.text || subtask.step || subtask.title || "",
+          description: subtask.description || subtask.details || "",
+          checked: completed.includes(id),
+          time_estimate: subtask.time_estimate_minutes || subtask.time_estimate || subtask.duration || 15
+        };
+      })
     );
     setMainTaskChecked(false);
-  }, [location.key, subtasksFromState]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key]);
 
   // Check if all subtasks are completed
   useEffect(() => {
@@ -162,14 +166,15 @@ export default function TasksPage() {
     console.log(`Starting subtask ${subtaskId}: "${subtaskText}" with time estimate: ${timeEstimate}m`);
     
     navigate("/timer", {
-      state: { 
-        subtaskId, 
-        subtaskText, 
-        taskName: task, 
-        currentTaskIndex: subtaskId, 
-        totalTasks: subtasks.length, 
-        completedTasks: subtasks.filter(st => st.checked).map(st => st.id), 
-        time_estimate: timeEstimate
+      state: {
+        subtaskId,
+        subtaskText,
+        taskName: task,
+        currentTaskIndex: subtaskId,
+        totalTasks: subtasks.length,
+        completedTasks: subtasks.filter(st => st.checked).map(st => st.id),
+        time_estimate: timeEstimate,
+        subtasks: subtasksFromState
       }
     });
   };
@@ -281,7 +286,7 @@ export default function TasksPage() {
 
           {/* Done button */}
           <button
-            onClick={() => navigate("/report")}
+            onClick={() => navigate("/wrap-up")}
             className="bg-[#a2b5a1] hover:bg-[#92a591] active:bg-[#82956a] transition-colors rounded-[15px] py-3 w-full font-['Inter:Regular',sans-serif] text-[1.3rem] text-black cursor-pointer border-none flex-shrink-0"
           >
             Done

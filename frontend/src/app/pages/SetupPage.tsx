@@ -61,7 +61,7 @@ export default function SetupPage() {
     formData.append("user_id", name || `user_${Date.now()}`);  // Use name or generate ID
 
     try {
-      const response = await fetch("http://localhost:5000/api/prescription/upload-file", {
+      const response = await fetch("http://127.0.0.1:5000/api/prescription/upload-file", {
         method: "POST",
         body: formData,
       });

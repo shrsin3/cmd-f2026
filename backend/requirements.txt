@@ -8,6 +8,7 @@ google-generativeai==0.7.2
 google-genai==0.3.0
 
 # Computer Vision (For FocusSessionService)
+numpy<2
 opencv-python==4.9.0.80
 mediapipe==0.10.11
 protobuf==3.20.3

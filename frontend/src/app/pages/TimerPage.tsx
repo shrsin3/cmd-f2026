@@ -5,20 +5,21 @@ import imgAdobeExpressFile2 from "../../assets/4ecbf1117d8120f8709d5f23417aad21b
 import Navbar from "../components/Navbar";
 import FocusDetector from "../components/focus/FocusDetectorPopup";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = "http://127.0.0.1:5000";
 
 export default function TimerPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
   const { 
-    subtaskId, 
+    subtaskId,
     subtaskText,
-    taskName, 
-    currentTaskIndex, 
-    totalTasks, 
+    taskName,
+    currentTaskIndex,
+    totalTasks,
     completedTasks,
-    time_estimate = 20 // Default to 20 minutes if not provided
+    time_estimate = 20, // Default to 20 minutes if not provided
+    subtasks
   } = location.state || {};
 
   // Convert minutes to seconds for the timer
@@ -97,7 +98,8 @@ export default function TimerPage() {
         completedTasks: completedTasks || [],
         distractions,
         timeSpent: Math.floor(minutes),
-        timeEstimate: time_estimate
+        timeEstimate: time_estimate,
+        subtasks
       }
     });
   };
@@ -106,7 +108,7 @@ export default function TimerPage() {
     <div className="min-h-screen bg-[#ececec] flex flex-col">
       <Navbar />
 
-      <div className="flex flex-1 items-center justify-center px-6 -mt-8">
+      <div className="flex flex-1 items-center justify-center px-6 -mt-16">
         <div className="bg-[#a2b5a1] rounded-[20px] w-full max-w-[900px] px-10 py-8 flex flex-col gap-6">
 
           {/* Top section */}
@@ -159,9 +161,9 @@ export default function TimerPage() {
             </div>
 
             {/* Progress + Dino */}
-            <div className="flex flex-col items-center gap-4 w-[280px] flex-shrink-0">
+            <div className="flex flex-col items-center gap-2 w-[280px] flex-shrink-0">
 
-              {/* Progress bar - based on tasks completed, not time */}
+              {/* Progress bar + fire counter */}
               <div className="w-full">
                 <div className="w-full bg-white border-[3px] border-black h-[32px] overflow-hidden rounded-sm">
                   <div
@@ -169,21 +171,15 @@ export default function TimerPage() {
                     style={{ width: `${taskProgress}%` }}
                   />
                 </div>
-                <p className="text-sm text-black font-medium text-center mt-2">
-                  {completedCount} of {totalTasks} tasks
-                </p>
-              </div>
-
-              {/* Fire counter */}
-              <div className="flex items-center gap-2 self-start">
-                <svg className="w-[24px] h-[28px]" fill="none" viewBox="0 0 34.6 38.95">
-                  <path clipRule="evenodd" d={svgPaths.p24e41080} fill="#EB5757" fillRule="evenodd" />
-                  <path clipRule="evenodd" d={svgPaths.p102a8fe0} fill="#F2C94C" fillRule="evenodd" />
-                </svg>
-
-                <span className="font-['Inter:Regular',sans-serif] text-[1.1rem] text-black font-medium">
-                  {currentTaskIndex || 1}/{totalTasks || 1}
-                </span>
+                <div className="flex items-center gap-2 mt-1">
+                  <svg className="w-[20px] h-[24px]" fill="none" viewBox="0 0 34.6 38.95">
+                    <path clipRule="evenodd" d={svgPaths.p24e41080} fill="#EB5757" fillRule="evenodd" />
+                    <path clipRule="evenodd" d={svgPaths.p102a8fe0} fill="#F2C94C" fillRule="evenodd" />
+                  </svg>
+                  <span className="font-['Inter:Regular',sans-serif] text-[1rem] text-black font-medium">
+                    {completedCount}/{totalTasks || 1}
+                  </span>
+                </div>
               </div>
 
               {/* Dino */}

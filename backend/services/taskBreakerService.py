@@ -47,7 +47,7 @@ class TaskBreakerService:
         ADHD users struggle with 'Executive Dysfunction,' so make the first step extremely easy (e.g., 'Stand up and walk to the kitchen').
 
         Format your response as JSON:
-        {{"goal": "{goal}", "subtasks": [], "estimated_total_time": 45}}
+        {{"goal": "{goal}", "subtasks": [{{"title": "short task name", "description": "detailed description", "time_estimate_minutes": 10}}], "estimated_total_time": 45}}
         """
 
         try:

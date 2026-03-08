@@ -7,12 +7,18 @@ import Navbar from "../components/Navbar";
 export default function WrapUpPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { subtaskId, taskName, currentTaskIndex, totalTasks, completedTasks } = location.state || {};
+  const { subtaskId, taskName, currentTaskIndex, totalTasks, completedTasks, subtasks } = location.state || {};
+
+  // Include the just-completed task in the count
+  const completedCount = [...new Set([...(completedTasks || []), subtaskId])].length;
+  const total = totalTasks || 1;
+  const progressPercent = (completedCount / total) * 100;
 
   const handleNextTasks = () => {
     navigate("/tasks", {
       state: {
         task: taskName,
+        subtasks: subtasks || [],
         completedSubtaskId: subtaskId,
         completedTasks: [...(completedTasks || []), subtaskId]
       }
@@ -52,16 +58,16 @@ export default function WrapUpPage() {
 <div className="flex flex-col items-start gap-2 w-[340px] flex-shrink-0 -mt-16 -ml-10">
   {/* Progress bar */}
   <div className="w-full bg-white border-[3px] border-black h-[36px] overflow-hidden rounded-sm">
-    <div className="bg-[#54a654] h-full w-[67%]" />
+    <div className="bg-[#54a654] h-full transition-all duration-300" style={{ width: `${progressPercent}%` }} />
   </div>
   {/* Fire + counter */}
   <div className="flex items-center gap-2 self-start">
-    <svg className="w-[30px] h-[34px]" fill="none" viewBox="0 0 34.6 38.95">
+    <svg className="w-[24px] h-[28px]" fill="none" viewBox="0 0 34.6 38.95">
       <path clipRule="evenodd" d={svgPaths.p24e41080} fill="#EB5757" fillRule="evenodd" />
       <path clipRule="evenodd" d={svgPaths.p102a8fe0} fill="#F2C94C" fillRule="evenodd" />
     </svg>
-    <span className="font-['Inter:Regular',sans-serif] text-[1.4rem] text-black">
-      2/{totalTasks || 3}
+    <span className="font-['Inter:Regular',sans-serif] text-[1.1rem] text-black font-medium">
+      {completedCount}/{total}
     </span>
   </div>
   {/* Dino */}

@@ -28,7 +28,7 @@ export default function Home() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/task/break", {
+      const response = await fetch("http://127.0.0.1:5000/api/task/break", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ goal: taskInput }),
@@ -63,7 +63,7 @@ export default function Home() {
         // Handle object responses
         const time = subtask.time_estimate_minutes || subtask.time_estimate || subtask.duration || 15;
         const description = subtask.description || subtask.details || "";
-        const text = subtask.step || subtask.title || subtask.text || "";
+        const text = subtask.step || subtask.title || subtask.text || subtask.description || "";
 
         console.log(`Subtask ${index + 1}: text="${text}", time=${time}m, description="${description.substring(0, 50)}..."`);
 
@@ -110,9 +110,9 @@ export default function Home() {
     <div className="min-h-screen bg-[#ececec] flex flex-col">
       <Navbar />
 
-      <div className="flex flex-1 flex-row items-center justify-center gap-20 px-6 py-0 -mt-16">
+      <div className="flex flex-1 flex-row items-center justify-center gap-12 px-6">
         {/* Dino image */}
-        <div className="w-full max-w-[400px] flex-shrink-0 hidden md:flex">
+        <div className="w-full max-w-[300px] flex-shrink-0 flex">
           <img
             alt="Focusaurus dinosaur mascot"
             className="w-full h-auto object-contain"
@@ -161,7 +161,7 @@ export default function Home() {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className={`rounded-[15px] px-6 py-2 w-fit text-[17px] text-black cursor-pointer border-none font-['Inter:Regular',sans-serif] transition-all duration-200 flex items-center gap-2 ${
+            className={`rounded-[15px] px-6 py-2 min-w-[120px] min-h-[40px] text-[17px] text-black cursor-pointer border-none font-['Inter:Regular',sans-serif] transition-colors duration-200 flex items-center justify-center gap-2 ${
               isLoading
                 ? "bg-[#8a9d89] opacity-70 cursor-not-allowed"
                 : "bg-[#A2B5A1] hover:bg-[#92a591] active:bg-[#82956a]"
