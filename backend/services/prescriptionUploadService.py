@@ -10,6 +10,12 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load .env from backend root (one level up from services)
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(env_path)
 
 import google.generativeai as genai
 
@@ -19,22 +25,29 @@ logger = logging.getLogger(__name__)
 class PrescriptionService:
     """Service for uploading and analyzing prescriptions"""
 
-    def __init__(self, upload_dir: str = "uploads", profile_dir: str = "prescription_data"):
+    def __init__(self, upload_dir: str = "uploads", profile_dir: str = None):
+        # Uploads folder stays local to services
         self.upload_dir = Path(upload_dir)
-        self.profile_dir = Path(profile_dir)
-        self.api_key = os.getenv("GOOGLE_API_KEY")
-        
+        self.upload_dir.mkdir(exist_ok=True)
+
+        # Profile folder (where JSON is saved)
+        if profile_dir is None:
+            # ../data relative to this file
+            self.profile_dir = Path(__file__).resolve().parent.parent / "data"
+        else:
+            self.profile_dir = Path(profile_dir)
+
+        self.profile_dir.mkdir(exist_ok=True)  # ensure folder exists
+
+        self.api_key = os.getenv("GEMINI_API_KEY")
         if not self.api_key:
-            raise ValueError("GOOGLE_API_KEY environment variable not set")
-        
+            raise ValueError("GEMINI_API_KEY environment variable not set")
+
+        import google.generativeai as genai
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel('gemini-2.5-flash')
-        
-        # Create directories
-        self.upload_dir.mkdir(exist_ok=True)
-        self.profile_dir.mkdir(exist_ok=True)
-        
-        logger.info("PrescriptionService initialized")
+
+        logger.info(f"PrescriptionService initialized. JSON files will be saved to {self.profile_dir}")
 
     def analyze_text(self, text: str) -> Dict:
         """Analyze prescription text with Gemini AI"""
@@ -140,3 +153,29 @@ Prescription:
         except json.JSONDecodeError as e:
             logger.error(f"JSON parse error: {e}")
             return {"medications": [], "error": "Parse error", "confidence": 0}
+        
+if __name__ == "__main__":
+
+    print("Testing PrescriptionService...")
+
+    service = PrescriptionService()
+
+    sample_text = """
+    Patient: John Smith
+    Medication: Adderall 10mg
+    Frequency: Twice daily
+    Doctor: Dr. Brown
+    """
+
+    result = service.analyze_text(sample_text)
+
+    print("\nAnalysis Result:")
+    print(result)
+
+    # Test saving
+    service.save_prescription(
+        user_id="test_user",
+        analysis=result
+    )
+
+    print("Prescription file saved.")

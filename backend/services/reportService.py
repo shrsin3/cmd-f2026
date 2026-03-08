@@ -27,15 +27,16 @@ class FocusReportService:
             raise ValueError("GEMINI_API_KEY environment variable not set")
 
         self.client = genai.Client(api_key=self.api_key)
-        self.model_id = "gemini-1.5-flash" 
+        self.model_id = "gemini-2.5-flash TTS" 
         
         # Resolve the absolute path to the 'data' directory
         # This goes up one level from 'services/' then into 'data/'
         self.data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
         
+        
         # Specific file targets
         self.sessions_file = os.path.join(self.data_dir, "task_sessions.json")
-        self.prescription_file = os.path.join(self.data_dir, "prescription_data.json")
+        self.prescription_file = os.path.join(self.data_dir, "test_user_prescription.json")
         
         logger.info(f"FocusReportService initialized. Data directory: {self.data_dir}")
 
@@ -149,3 +150,12 @@ class FocusReportService:
                 "total_focus_minutes": session_minutes,
                 "total_distractions": distractions_count
             }
+
+if __name__ == "__main__":
+
+    service = FocusReportService()
+
+    report = service.generate_report()
+
+    print("\nGenerated Report:")
+    print(json.dumps(report, indent=2))

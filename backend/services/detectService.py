@@ -155,3 +155,28 @@ class FocusSessionService:
         thread.daemon = True  # Ensures thread closes if the main server closes
         thread.start()
         return {"status": "session_started", "duration": duration_mins}
+    
+if __name__ == "__main__":
+
+    print("Starting DetectService test session...")
+
+    try:
+        service = FocusSessionService()
+
+        print("Running 0.1 minute (6 second) test session...")
+        
+        # Very short test session so you don't have to sit in front of webcam long
+        result = service.run_session(duration_mins=0.5)
+
+        print("\nSession Result:")
+        print(result)
+
+        print("\nCheck file output at:")
+        print(service.storage_file)
+
+        if os.path.exists(service.storage_file):
+            print("✅ task_sessions.json successfully created!")
+
+    except Exception as e:
+        print("❌ DetectService test failed:")
+        print(str(e))
