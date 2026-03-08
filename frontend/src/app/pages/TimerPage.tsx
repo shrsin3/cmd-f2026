@@ -30,8 +30,8 @@ export default function TimerPage() {
   const [distractions, setDistractions] = useState(0);
   const [sessionStart] = useState(Date.now());
 
-  // Progress based on completed tasks, not time
-  const completedCount = completedTasks?.length || 0;
+  // Progress based on completed tasks (include current task being worked on)
+  const completedCount = [...new Set([...(completedTasks || []), subtaskId])].length;
   const taskProgress = totalTasks > 0 ? (completedCount / totalTasks) * 100 : 0;
 
   const formatTime = (seconds) => {

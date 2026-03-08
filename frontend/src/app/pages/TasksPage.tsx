@@ -286,7 +286,7 @@ export default function TasksPage() {
 
           {/* Done button */}
           <button
-            onClick={() => navigate("/wrap-up")}
+            onClick={() => navigate("/report")}
             className="bg-[#a2b5a1] hover:bg-[#92a591] active:bg-[#82956a] transition-colors rounded-[15px] py-3 w-full font-['Inter:Regular',sans-serif] text-[1.3rem] text-black cursor-pointer border-none flex-shrink-0"
           >
             Done
