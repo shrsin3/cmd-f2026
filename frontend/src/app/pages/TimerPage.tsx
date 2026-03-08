@@ -66,43 +66,42 @@ export default function TimerPage() {
     }
   };
 
-  // Finish session
+  // Finish session and log to backend
   const handleFinish = async () => {
-    const minutes = (Date.now() - sessionStart) / 1000 / 60;
+  const minutesSpent = (Date.now() - sessionStart) / 1000 / 60;
 
-    try {
-      await fetch(`${BACKEND_URL}/log_session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          minutes,
-          distractions,
-          subtaskId,
-          taskName,
-          subtaskText
-        })
-      });
-    } catch (err) {
-      console.error("Failed to log session:", err);
-    }
-
-    navigate("/wrap-up", {
-      state: {
-        subtaskId,
-        subtaskText,
-        taskName,
-        currentTaskIndex,
-        totalTasks,
-        completedTasks: completedTasks || [],
-        distractions,
-        timeSpent: Math.floor(minutes),
-        timeEstimate: time_estimate,
-        subtasks
-      }
+  try {
+    await fetch("http://127.0.0.1:5000/log_session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        minutes: Math.round(minutesSpent * 10) / 10,
+        distractions: distractions,
+        subtaskId: subtaskId,
+        taskName: taskName,
+        subtaskText: subtaskText,
+        timestamp: new Date().toISOString()
+      })
     });
-  };
+  } catch (err) {
+    console.error("Failed to log session:", err);
+  }
+
+  navigate("/wrap-up", {
+    state: {
+      subtaskId,
+      subtaskText,
+      taskName,
+      currentTaskIndex,
+      totalTasks,
+      completedTasks: completedTasks || [],
+      distractions,
+      timeSpent: Math.floor(minutesSpent),
+      timeEstimate: time_estimate,
+      subtasks
+    }
+  });
+};
 
   return (
     <div className="min-h-screen bg-[#ececec] flex flex-col">

@@ -10,6 +10,8 @@ import logging
 from datetime import datetime
 from pathlib import Path
 import re
+import json
+from pathlib import Path
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -30,6 +32,31 @@ logger = logging.getLogger(__name__)
 # Create Flask app
 app = Flask(__name__)
 CORS(app)
+
+# Path for sessions file
+SESSIONS_FILE = Path(__file__).parent / 'data' / 'task_sessions.json'
+SESSIONS_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+def load_sessions():
+    """Load sessions from JSON file"""
+    if SESSIONS_FILE.exists():
+        try:
+            with open(SESSIONS_FILE, 'r') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError) as e:
+            logger.warning(f"Could not load sessions file: {e}")
+            return []
+    return []
+
+
+def save_sessions(sessions):
+    """Save sessions to JSON file"""
+    try:
+        with open(SESSIONS_FILE, 'w') as f:
+            json.dump(sessions, f, indent=2)
+        logger.info(f"Sessions saved to {SESSIONS_FILE}")
+    except IOError as e:
+        logger.error(f"Could not save sessions file: {e}")
 
 # Configuration
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB
@@ -451,6 +478,79 @@ def start_focus_session():
             "message": str(e)
         }), 500
         
+
+@app.route('/log_session', methods=['POST'])
+def log_session():
+    """Log a completed task session"""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"status": "error", "message": "No data provided"}), 400
+        
+        minutes = data.get('minutes', 0)
+        distractions = data.get('distractions', 0)
+        subtask_id = data.get('subtaskId')
+        task_name = data.get('taskName', 'Unknown Task')
+        subtask_text = data.get('subtaskText', '')
+        timestamp = data.get('timestamp') or datetime.now().isoformat()
+        
+        session_entry = {
+            "status": "success",
+            "minutes": minutes,
+            "distractions": distractions,
+            "timestamp": timestamp,
+            "subtaskId": subtask_id,
+            "taskName": task_name,
+            "subtaskText": subtask_text
+        }
+        
+        sessions = load_sessions()
+        sessions.append(session_entry)
+        save_sessions(sessions)
+        
+        logger.info(f"✓ Session logged: {minutes}m, {distractions} distractions")
+        
+        return jsonify({
+            "status": "success",
+            "message": "Session logged successfully",
+            "session": session_entry
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error logging session: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route('/get_sessions', methods=['GET'])
+def get_sessions():
+    """Get all sessions"""
+    try:
+        sessions = load_sessions()
+        return jsonify({
+            "status": "success",
+            "sessions": sessions,
+            "total_sessions": len(sessions)
+        }), 200
+    except Exception as e:
+        logger.error(f"Error retrieving sessions: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route('/clear_sessions', methods=['POST'])
+def clear_sessions():
+    """Clear all sessions"""
+    try:
+        save_sessions([])
+        return jsonify({
+            "status": "success",
+            "message": "All sessions cleared"
+        }), 200
+    except Exception as e:
+        logger.error(f"Error clearing sessions: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    
+    
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================

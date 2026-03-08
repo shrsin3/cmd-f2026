@@ -25,7 +25,8 @@ class TaskBreakerService:
             raise ValueError("GEMINI_API_KEY environment variable not set")
 
         genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        # self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model = genai.GenerativeModel('gemma-3-1b-it')
 
         # Resolve data folder path
         self.data_dir = Path(__file__).resolve().parent.parent / "data"
