@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-3jpol6rxuy";
+import logo from "../../assets/logo.png";
 import imgGeminiGeneratedImageYmtf8Oymtf8Oymtf2 from "../../assets/257c2ab0b207a7ebe996b7cc56f7180563bf9ce7.png";
 
 export default function LoginPage() {
@@ -20,9 +21,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#ececec] flex flex-col items-center justify-center px-4 py-10">
       {/* Logo */}
-      <p className="font-['General_Sans:Semibold_Italic',sans-serif] text-[1.8rem] text-black mb-8 self-start ml-8">
-        focusaurus
-      </p>
+      <div className="flex items-center gap-3 mb-8 self-start ml-8 -mt-20"></div>
+      <div className="flex items-center gap-4 mb-8 self-start ml-8">
+  <img src={logo} alt="Focusaurus logo" className="w-[70px] h-auto" />
+  <p className="font-['General_Sans:Semibold_Italic',sans-serif] text-[1.8rem] text-black">
+    focusaurus
+  </p>
+</div>
 
       <div className="relative w-full max-w-[441px]">
         {/* Card */}
