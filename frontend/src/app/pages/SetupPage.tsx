@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-7vlb14pvc9";
-import imgImg35381 from "../../assets/bfa4c9b7ceb790fca3313839f0f094f479b64a6e.png";
+import imgImg35381 from "../../assets/steggy.jpg";
 import imgAdobeExpressFile3 from "../../assets/4ecbf1117d8120f8709d5f23417aad21bf2696d7.png";
-import imgImg35361 from "../../assets/cacad74f23f7ccbaa337741e46da970a869f8e6b.png";
+import imgImg35361 from "../../assets/topsy.jpg";
 
 export default function SetupPage() {
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ export default function SetupPage() {
                   selectedDino === dino.id ? "bg-[#a2b5a1]" : "bg-white hover:bg-gray-100"
                 }`}
               >
-                <img alt={dino.alt} className="w-[100px] h-[100px] object-contain" src={dino.img} />
+                <img alt={dino.alt} className="w-[200px] h-[100px] object-contain" src={dino.img} />
                 <p className="font-['Inter:Regular',sans-serif] text-[1.2rem] text-black">{dino.label}</p>
               </button>
             ))}
