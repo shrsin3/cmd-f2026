@@ -12,7 +12,7 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def generate_subtasks(goal, prescription_info="Needs high-stimulation, 10-15 min bursts"):
     # Using gemini-2.0-flash for speed/hackathon efficiency
-    model_id = "gemini-2.0-flash" 
+    model_id = "gemini-2.5-flash" 
     
     prompt = f"""
     Role: You are an ADHD Productivity Coach.
