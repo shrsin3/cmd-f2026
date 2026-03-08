@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-7vlb14pvc9";
 import imgImg35381 from "../../assets/bfa4c9b7ceb790fca3313839f0f094f479b64a6e.png";
@@ -11,6 +11,12 @@ export default function SetupPage() {
   const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
   const [selectedDino, setSelectedDino] = useState<string | null>(null);
 
+  // New state for file upload
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [uploadMessage, setUploadMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);  // Reference to hidden file input
+
   const handleSubmit = () => {
     if (selectedActivity && selectedDino) {
       localStorage.setItem("setupCompleted", "true");
@@ -18,6 +24,62 @@ export default function SetupPage() {
       localStorage.setItem("selectedDino", selectedDino);
       if (name) localStorage.setItem("userName", name);
       navigate("/home");
+    }
+  };
+
+  // Handle clicking the upload area
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();  // Trigger the hidden file input
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type (match backend allowed extensions)
+    const allowedTypes = ['text/plain', 'application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+    if (!allowedTypes.includes(file.type)) {
+      setUploadStatus("error");
+      setUploadMessage("Invalid file type. Please upload a TXT, PDF, PNG, JPG, or JPEG file.");
+      return;
+    }
+
+    // Validate file size (e.g., max 10MB as per backend)
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadStatus("error");
+      setUploadMessage("File too large. Maximum size is 10MB.");
+      return;
+    }
+
+    setSelectedFile(file);
+    setUploadStatus("uploading");
+    setUploadMessage("Uploading...");
+
+    // Prepare form data for upload
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("user_id", name || `user_${Date.now()}`);  // Use name or generate ID
+
+    try {
+      const response = await fetch("http://localhost:5000/api/prescription/upload-file", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setUploadStatus("success");
+        setUploadMessage(`Uploaded successfully: ${file.name}`);
+        // Optionally store prescription data in localStorage or state
+        localStorage.setItem("prescriptionUploaded", "true");
+      } else {
+        setUploadStatus("error");
+        setUploadMessage(result.message || "Upload failed.");
+      }
+    } catch (error) {
+      setUploadStatus("error");
+      setUploadMessage("Network error. Please try again.");
     }
   };
 
@@ -99,12 +161,30 @@ export default function SetupPage() {
           <h2 className="font-['Inter:Regular',sans-serif] text-[1.6rem] text-black">
             Upload your prescription
           </h2>
-          <div className="bg-white rounded-[20px] p-8 flex flex-col items-center justify-center gap-4 min-h-[160px] cursor-pointer hover:bg-gray-50 transition-colors border-2 border-dashed border-gray-300">
+          <div
+            onClick={handleUploadClick}
+            className="bg-white rounded-[20px] p-8 flex flex-col items-center justify-center gap-4 min-h-[160px] cursor-pointer hover:bg-gray-50 transition-colors border-2 border-dashed border-gray-300"
+          >
             <svg className="w-[60px] h-[60px]" fill="none" viewBox="0 0 91.3333 91.3333">
               <path d={svgPaths.p135f3200} fill="black" />
             </svg>
-            <p className="font-['Inter:Regular',sans-serif] text-[1rem] text-gray-500">Click to upload</p>
+            <p className="font-['Inter:Regular',sans-serif] text-[1rem] text-gray-500">
+              {uploadStatus === "uploading" ? "Uploading..." : uploadStatus === "success" ? "Uploaded!" : "Click to upload"}
+            </p>
+            {uploadMessage && (
+              <p className={`font-['Inter:Regular',sans-serif] text-[0.9rem] ${uploadStatus === "error" ? "text-red-500" : "text-green-500"}`}>
+                {uploadMessage}
+              </p>
+            )}
           </div>
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.pdf,.png,.jpg,.jpeg"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
         </section>
 
         {/* Submit */}

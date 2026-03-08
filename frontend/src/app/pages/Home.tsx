@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import imgAdobeExpressFile2 from "../../assets/4ecbf1117d8120f8709d5f23417aad21bf2696d7.png";
 import Navbar from "../components/Navbar";
 
 export default function Home() {
   const [taskInput, setTaskInput] = useState("");
+  const [userName, setUserName] = useState("Dyno");
   const navigate = useNavigate();
+
+
+  // Retrieve the name from localStorage on component mount
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);  // Empty dependency array means this runs once on mount
 
   const handleSubmit = () => {
     if (taskInput.trim()) {
@@ -26,7 +36,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-6 w-full max-w-[540px]">
           <div>
-            <p className="font-['Inter:Regular',sans-serif] text-[3.3rem] text-black leading-snug mb-0">Hi Dyno,</p>
+            <p className="font-['Inter:Regular',sans-serif] text-[3.3rem] text-black leading-snug mb-0">Hi {userName},</p>
             <p className="font-['Inter:Regular',sans-serif] text-[2.5rem] text-black leading-snug">What is your plan for today?</p>
           </div>
           <div className="flex items-center gap-6 bg-[rgba(120,120,128,0.16)] rounded-full px-4 py-3 w-full">
