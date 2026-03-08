@@ -5,6 +5,9 @@ import imgAdobeExpressFile2 from "../../assets/4ecbf1117d8120f8709d5f23417aad21b
 import Navbar from "../components/Navbar";
 import FocusDetector from "../components/focus/FocusDetectorPopup";
 
+const DURATION_MINS = 20;
+const BACKEND_URL = "http://localhost:5000";
+
 export default function TimerPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -86,7 +89,6 @@ export default function TimerPage() {
       <Navbar />
 
       <div className="flex flex-1 items-center justify-center px-6 -mt-8">
-        {/* Card */}
         <div className="bg-[#a2b5a1] rounded-[20px] w-full max-w-[900px] px-10 py-8 flex flex-col gap-6">
 
           {/* Top section */}
@@ -127,7 +129,7 @@ export default function TimerPage() {
                 </svg>
 
                 <span className="font-['Inter:Regular',sans-serif] text-[1.1rem] text-black">
-                  {currentTaskIndex || 1}/{totalTasks || 3}
+                  1/{totalTasks || 3}
                 </span>
               </div>
 
