@@ -1,18 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-shhkcqo5p2";
 import imgAdobeExpressFile2 from "../../assets/4ecbf1117d8120f8709d5f23417aad21bf2696d7.png";
 import Navbar from "../components/Navbar";
+
+const DURATION_MINS = 20;
+const BACKEND_URL = "http://localhost:5000";
 
 export default function TimerPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { subtaskId, taskName, currentTaskIndex, totalTasks, completedTasks } = location.state || {};
 
+  const totalSeconds = DURATION_MINS * 60;
+  const [timeLeft, setTimeLeft] = useState(totalSeconds);
   const [isStopped, setIsStopped] = useState(false);
+  const [sessionStarted, setSessionStarted] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const timeLeft = 16 * 60 + 15;
-  const progress = 30;
+  const progress = ((totalSeconds - timeLeft) / totalSeconds) * 100;
+
+  useEffect(() => {
+    const startSession = async () => {
+      try {
+        await fetch(`${BACKEND_URL}/start-session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ duration_mins: DURATION_MINS }),
+        });
+        setSessionStarted(true);
+      } catch (err) {
+        console.error("Failed to start session:", err);
+        setSessionStarted(true); // still start timer even if backend fails
+      }
+    };
+    startSession();
+  }, []);
+
+  useEffect(() => {
+    if (!sessionStarted || isStopped) return;
+
+    intervalRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current!);
+          handleFinish();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalRef.current!);
+  }, [sessionStarted, isStopped]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -21,6 +61,7 @@ export default function TimerPage() {
   };
 
   const handleFinish = () => {
+    clearInterval(intervalRef.current!);
     navigate("/wrap-up", {
       state: { subtaskId, taskName, currentTaskIndex, totalTasks, completedTasks: completedTasks || [] }
     });
@@ -31,13 +72,9 @@ export default function TimerPage() {
       <Navbar />
 
       <div className="flex flex-1 items-center justify-center px-6 -mt-8">
-        {/* Card */}
         <div className="bg-[#a2b5a1] rounded-[20px] w-full max-w-[900px] px-10 py-8 flex flex-col gap-6">
 
-          {/* Top section: timer left, progress+dino right */}
           <div className="flex flex-row items-center gap-6">
-
-            {/* Left: label + big timer */}
             <div className="flex flex-col gap-2 flex-1">
               <p className="font-['Inter:Regular',sans-serif] text-[2.3rem] text-black">
                 You need to lock in for
@@ -47,29 +84,23 @@ export default function TimerPage() {
               </p>
             </div>
 
-            {/* Right: progress bar + fire/counter + dino */}
             <div className="flex flex-col items-center gap-2 w-[280px] flex-shrink-0">
-              {/* Progress bar */}
               <div className="w-full bg-white border-[3px] border-black h-[32px] overflow-hidden rounded-sm">
-                <div className="bg-[#54a654] h-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                <div className="bg-[#54a654] h-full" style={{ width: "30%" }} />
               </div>
-              {/* Fire + counter */}
               <div className="flex items-center gap-2 self-start">
                 <svg className="w-[24px] h-[28px]" fill="none" viewBox="0 0 34.6 38.95">
                   <path clipRule="evenodd" d={svgPaths.p24e41080} fill="#EB5757" fillRule="evenodd" />
                   <path clipRule="evenodd" d={svgPaths.p102a8fe0} fill="#F2C94C" fillRule="evenodd" />
                 </svg>
                 <span className="font-['Inter:Regular',sans-serif] text-[1.1rem] text-black">
-                  {currentTaskIndex || 1}/{totalTasks || 3}
+                  1/{totalTasks || 3}
                 </span>
               </div>
-              {/* Dino */}
               <img alt="Focusaurus dinosaur mascot" className="w-full h-auto object-contain" src={imgAdobeExpressFile2} />
             </div>
-
           </div>
 
-          {/* Bottom: Stop / Finish buttons */}
           <div className="flex gap-4 w-full">
             <button
               onClick={() => setIsStopped(!isStopped)}
